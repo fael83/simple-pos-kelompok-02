@@ -7,8 +7,10 @@
 
     <div x-data="{
         cart: [],
+        lastAdded: null,
         addToCart(id, name, price) {
             this.cart.push({ id, name, price: Number(price) });
+            this.lastAdded = id;
         },
         removeFromCart(index) {
             this.cart.splice(index, 1);
@@ -21,6 +23,7 @@
                 <div class="grid grid-cols-3 gap-4">
                     @foreach ($products as $product)
                         <div class="border border-slate-200 rounded-xl p-4 cursor-pointer bg-white hover:border-slate-400 hover:shadow-sm transition-all relative"
+                            :class="lastAdded === {{ $product->id }} ? 'ring-2 ring-blue-500 border-blue-500' : 'border-slate-200 hover:border-slate-400'"
                             @click="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }})">
                             
                             <div class="flex justify-between items-start">
