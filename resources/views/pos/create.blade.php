@@ -17,16 +17,28 @@
             return this.cart.reduce((sum, item) => sum + item.price, 0);
         }
     }">
-        {{-- Grid Kartu Produk --}}
-        <div class="grid grid-cols-3 gap-4">
-            @foreach ($products as $product)
-                <div class="border border-slate-200 rounded-xl p-4 cursor-pointer bg-white hover:border-slate-400 hover:shadow-sm transition-all"
-                    @click="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }})">
-                    <p class="font-semibold text-slate-800">{{ $product->name }}</p>
-                    <p class="text-sm text-slate-500 mt-1">Rp {{ number_format($product->price) }}</p>
+                {{-- Grid Kartu Produk --}}
+                <div class="grid grid-cols-3 gap-4">
+                    @foreach ($products as $product)
+                        <div class="border border-slate-200 rounded-xl p-4 cursor-pointer bg-white hover:border-slate-400 hover:shadow-sm transition-all relative"
+                            @click="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }})">
+                            
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold text-slate-800">{{ $product->name }}</p>
+                                    <p class="text-sm text-slate-500 mt-1">Rp {{ number_format($product->price) }}</p>
+                                </div>
+
+                                @if($product->stock < 10)
+                                    <span class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">
+                                        Stok Menipis
+                                    </span>
+                                @endif
+                            </div>
+
+                        </div>
+                    @endforeach
                 </div>
-            @endforeach
-        </div>
 
         {{-- Panel Keranjang --}}
         <div class="mt-6 border border-slate-200 rounded-xl p-4 bg-white shadow-sm">
