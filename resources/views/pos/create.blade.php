@@ -8,14 +8,9 @@
     <div x-data="{
         cart: [],
         lastAdded: null,
-        timer: null,
         addToCart(id, name, price) {
             this.cart.push({ id, name, price: Number(price) });
             this.lastAdded = id;
-            clearTimeout(this.timer);
-            this.timer = setTimeout(() => {
-                this.lastAdded = null;
-            }, 2000);
         },
         removeFromCart(index) {
             this.cart.splice(index, 1);
