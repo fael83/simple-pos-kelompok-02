@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 class TransactionController extends Controller
 {
+    public function index()
+    {
+        return view('transactions.index');
+    }
+
+
     public function create()
     {
         $products = collect([
@@ -21,11 +27,6 @@ class TransactionController extends Controller
     public function store()
     {
         return 'Transaksi disimpan (belum ada logika penyimpanan)';
-    }
-
-    public function index()
-    {
-        return 'Daftar transaksi';
     }
 
     public function show(string $id)
