@@ -10,4 +10,4 @@
        class="hover:underline transition-all {{ request()->routeIs('transactions.index') ? 'text-blue-400 font-bold underline underline-offset-4' : 'text-gray-300' }}">
        Transaksi
     </a>
-</nav>ck
+</nav>
