@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Transaction;
 
 class TransactionController extends Controller
 {
-    public function index()
-    {
-        return view('transactions.index');
-    }
+    public function index(){
+    $transactions = Transaction::latest()->paginate(15);
+    return view('transactions.index', compact('transactions'));
+}
 
 
     public function create()

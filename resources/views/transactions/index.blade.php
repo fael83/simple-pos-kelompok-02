@@ -1,12 +1,23 @@
 @extends('layouts.app')
 @section('title', 'Riwayat Transaksi')
-
 @section('content')
-    <div class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 class="text-2xl font-bold mb-6">Riwayat Transaksi</h1>
-        
-        <div class="bg-white p-6 rounded-lg shadow">
-            <p class="text-gray-500">Daftar riwayat transaksi akan ditampilkan di sini.</p>
+    <h1 class="text-lg font-semibold mb-4">Riwayat Transaksi</h1>
+    @foreach ($transactions as $transaction)
+        <div class="border rounded-md p-3 mb-3">
+            <p class="font-medium">
+                Transaksi #{{ $transaction->id }}
+                &middot; {{ $transaction->created_at->format('d M Y H:i') }}
+                &middot; Rp {{ number_format($transaction->total) }}
+            </p>
+            <ul class="text-sm text-slate-500 mt-1">
+                @foreach ($transaction->details as $detail)
+                    <li>{{ $detail->product->name }} &times; {{ $detail->qty }} = Rp {{
+                    number_format($detail->subtotal) }}</li>↪
+                @endforeach
+            </ul>
         </div>
+    @endforeach
+    <div class="mt-4">
+        {{ $transactions->links() }}
     </div>
 @endsection
