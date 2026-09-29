@@ -9,6 +9,7 @@
                 &middot; Kasir: {{ $transaction->user->name }}
                 &middot; {{ $transaction->created_at->format('d M Y H:i') }}
                 &middot; Rp {{ number_format($transaction->total) }}
+                &middot; {{ $transaction->details->sum('qty') }} item
             </p>
             <ul class="text-sm text-slate-500 mt-1">
                 @foreach ($transaction->details as $detail)
