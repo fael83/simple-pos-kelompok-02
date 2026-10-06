@@ -17,6 +17,7 @@ class TransactionController extends Controller
         return view('pos.create', compact('products'));
     }
 
+
     public function store(StoreTransactionRequest $request)
     {
         $validated = $request->validated();
