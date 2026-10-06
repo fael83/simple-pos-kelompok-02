@@ -10,7 +10,13 @@ use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
-    // ... method lainnya jika ada
+    public function create()
+    {
+        $products = Product::orderBy('name')->get();
+
+        return view('pos.create', compact('products'));
+    }
+
 
     public function store(StoreTransactionRequest $request)
     {
