@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
 {
@@ -16,7 +17,6 @@ class TransactionController extends Controller
 
         return view('pos.create', compact('products'));
     }
-
 
     public function store(StoreTransactionRequest $request)
     {
@@ -29,9 +29,24 @@ class TransactionController extends Controller
             ]);
 
             $total = 0;
+            $requestedStock = [];
 
-            foreach ($validated['items'] as $item) {
-                $product = Product::findOrFail($item['product_id']);
+            foreach ($validated['items'] as $index => $item) {
+                $product = Product::lockForUpdate()->findOrFail($item['product_id']);
+
+                if (!isset($requestedStock[$product->id])) {
+                    $requestedStock[$product->id] = 0;
+                }
+
+                $requestedStock[$product->id] += $item['qty'];
+
+                if ($requestedStock[$product->id] > $product->stock) {
+                    throw ValidationException::withMessages([
+                        "items.{$index}.qty" =>
+                            "Stok produk {$product->name} tidak mencukupi. Stok tersedia: {$product->stock}.",
+                    ]);
+                }
+
                 $subtotal = $product->price * $item['qty'];
                 $total += $subtotal;
 

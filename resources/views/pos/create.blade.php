@@ -11,9 +11,13 @@
 </div>
 @endif
 
-@error('items')
-<div class="bg-red-50 text-red-700 p-3 rounded-md mb-4">{{ $message }}</div>
-@enderror
+@if ($errors->any())
+<div class="bg-red-50 text-red-700 p-3 rounded-md mb-4">
+    @foreach ($errors->all() as $error)
+        <p>{{ $error }}</p>
+    @endforeach
+</div>
+@endif
 
 <form method="POST" action="{{ route('transactions.store') }}" x-data="{
     cart: [],
@@ -30,6 +34,7 @@
     }
 }">
     @csrf
+
     <div class="grid grid-cols-3 gap-4">
         @foreach ($products as $product)
         <div class="border rounded-md p-3 cursor-pointer"
@@ -49,8 +54,13 @@
             </div>
         </template>
 
-        <p class="font-semibold mt-2">Subtotal: Rp <span x-text="subtotal()"></span></p>
-        <button type="submit" class="mt-3 bg-blue-600 text-white px-4 py-2 rounded-md">Bayar</button>
+        <p class="font-semibold mt-2">
+            Subtotal: Rp <span x-text="subtotal()"></span>
+        </p>
+
+        <button type="submit" class="mt-3 bg-blue-600 text-white px-4 py-2 rounded-md">
+            Bayar
+        </button>
     </div>
 </form>
 @endsection
