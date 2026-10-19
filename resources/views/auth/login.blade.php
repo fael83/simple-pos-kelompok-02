@@ -31,7 +31,7 @@
         </form>
 
         <p class="mt-6 text-xs text-slate-500">
-            Akun demo: admin@pos.test atau kasir@pos.test, kata sandi
+            Akun demo: admin@pos.test, kasir@pos.test, atau manager@pos.test, kata sandi
             <code>password</code>.
         </p>
     </div>

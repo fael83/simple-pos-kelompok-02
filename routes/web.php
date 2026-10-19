@@ -22,6 +22,7 @@ Route::post('/logout', [LoginController::class, 'destroy'])
 Route::middleware('auth')->group(function () {
     Route::get('/pos', [TransactionController::class, 'create'])->name('pos.create');
     Route::post('/pos', [TransactionController::class, 'store'])->name('transactions.store');
+
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
 
     Route::middleware('role:admin')->group(function () {
