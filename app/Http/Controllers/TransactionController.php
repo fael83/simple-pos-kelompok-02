@@ -11,6 +11,13 @@ use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
 {
+    public function index()
+    {
+        $transactions = Transaction::with('user')->latest()->paginate(10);
+
+        return view('transactions.index', compact('transactions'));
+    }
+
     public function create()
     {
         $products = Product::orderBy('name')->get();
@@ -24,7 +31,7 @@ class TransactionController extends Controller
 
         DB::transaction(function () use ($validated) {
             $transaction = Transaction::create([
-                'user_id' => 1, // sementara di-hardcode
+                'user_id' => auth()->id() ?? 1, // Mengambil ID user yang sedang login
                 'total' => 0,
             ]);
 
@@ -47,6 +54,7 @@ class TransactionController extends Controller
                     ]);
                 }
 
+                // Perbaikan pada baris subtotal (tanda minus dihapus & ditambah operator *)
                 $subtotal = $product->price * $item['qty'];
                 $total += $subtotal;
 

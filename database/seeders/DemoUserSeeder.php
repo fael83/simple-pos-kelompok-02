@@ -18,5 +18,10 @@ class DemoUserSeeder extends Seeder
             ['email' => 'kasir@pos.test'],
             ['name' => 'Kasir Kafe', 'role' => 'kasir', 'password' => 'password']
         );
+
+        User::firstOrCreate(
+            ['email' => 'manager@pos.test'],
+            ['name' => 'Manager Kafe', 'role' => 'manager', 'password' => 'password']
+        );
     }
 }
