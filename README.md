@@ -57,3 +57,34 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Skenario Uji Manual (Manual Testing Scenarios)
+
+Berikut adalah daftar pengujian manual untuk memastikan setiap peran pengguna berfungsi dengan baik di dalam aplikasi Simple POS:
+
+### 1. Peran: Admin
+* **Tujuan**: Memastikan admin dapat mengakses halaman manajemen pengguna dan mengelola data akun dengan benar.
+* **Langkah-langkah**:
+  1. Buka halaman login di browser (`http://127.0.0.1:8000/login`)[cite: 2].
+  2. Masukkan email `admin@pos.test` dan kata sandi `password`, lalu klik **Masuk**.
+  3. Setelah diarahkan ke dashboard, navigasikan ke menu **Manajemen Pengguna** (Users).
+  4. Coba tambahkan atau ubah status salah satu akun pengguna.
+* **Hasil yang Diharapkan**: Admin berhasil masuk ke dashboard khusus admin, dapat melihat daftar seluruh pengguna, serta sukses melakukan penambahan atau pembaruan data pengguna.
+
+### 2. Peran: Manager
+* **Tujuan**: Memastikan manager dapat mengakses laporan penjualan dan memantau ringkasan transaksi bisnis.
+* **Langkah-langkah**:
+  1. Buka halaman login di browser (`http://127.0.0.1:8000/login`)[cite: 2].
+  2. Masukkan email `manager@pos.test` dan kata sandi `password`, lalu klik **Masuk**.
+  3. Dari dashboard utama, pilih menu **Laporan** (Reports) atau **Analisis Penjualan**.
+  4. Periksa data grafik atau tabel rekapitulasi transaksi.
+* **Hasil yang Diharapkan**: Manager berhasil masuk, data laporan penjualan/statistik tampil dengan akurat sesuai dengan data di dalam database.
+
+### 3. Peran: Kasir
+* **Tujuan**: Memastikan kasir dapat melakukan simulasi transaksi penjualan baru (POS) dengan memilih produk dan memproses pembayaran.
+* **Langkah-langkah**:
+  1. Buka halaman login di browser (`http://127.0.0.1:8000/login`)[cite: 2].
+  2. Masukkan email `kasir@pos.test` dan kata sandi `password`, lalu klik **Masuk**.
+  3. Buka halaman **Transaksi / Kasir** (POS).
+  4. Pilih beberapa produk[cite: 4], masukkan jumlah pembayaran, lalu klik **Bayar**[cite: 4] untuk menyelesaikan transaksi[cite: 3].
+* **Hasil yang Diharapkan**: Kasir berhasil masuk ke antarmuka POS, produk dapat dimasukkan ke keranjang, transaksi berhasil diproses dengan munculnya pesan "Transaksi berhasil disimpan"[cite: 3], dan stok produk berkurang secara otomatis.

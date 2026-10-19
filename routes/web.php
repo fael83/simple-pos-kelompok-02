@@ -11,6 +11,8 @@ Route::get('/', function () {
 });
 
 Route::middleware('guest')->group(function () {
+    Route::view('/informasi', 'info')->name('info');
+
     Route::get('/login', [LoginController::class, 'create'])->name('login');
     Route::post('/login', [LoginController::class, 'store']);
 });
