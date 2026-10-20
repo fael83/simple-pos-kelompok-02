@@ -22,14 +22,22 @@ Route::post('/logout', [LoginController::class, 'destroy'])
 
 Route::middleware('auth')->group(function () {
     Route::get('/pos', [TransactionController::class, 'create'])->name('pos.create');
-    Route::post('/pos', [TransactionController::class, 'store'])->name('transactions.store');
-    Route::get('/transactions', [TransactionController::class,
-        'index'])->name('transactions.index');
+
+    Route::post('/pos', [TransactionController::class, 'store'])
+        ->name('transactions.store');
+
+    Route::get('/transactions', [TransactionController::class, 'index'])
+        ->name('transactions.index');
 
     Route::middleware('role:admin')->group(function () {
-        Route::resource('categories', CategoryController::class)->except(['show']);
+        Route::resource('categories', CategoryController::class)->except('show');
+
         Route::resource('products', ProductController::class)->except(['show', 'destroy']);
-        Route::get('/reports', [ReportController::class,
-            'index'])->name('reports.index');
+
+        Route::get('/reports', [ReportController::class, 'index'])
+            ->name('reports.index');
+
+        Route::get('/reports/export/csv', [ReportController::class, 'exportCsv'])
+            ->name('reports.export.csv');
     });
 });
