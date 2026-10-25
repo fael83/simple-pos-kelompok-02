@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ProcessProductImport implements ShouldQueue
 {
@@ -14,6 +15,7 @@ class ProcessProductImport implements ShouldQueue
 
     public int $tries = 3;
     public array $backoff = [10, 60];
+    public int $timeout = 60;
 
     public function __construct(private string $csvPath) {}
 
@@ -23,7 +25,10 @@ class ProcessProductImport implements ShouldQueue
         $rows = array_map('str_getcsv', $lines);
         $header = array_shift($rows);
 
-        foreach ($rows as $row) {
+        // Hapus log error yang lama
+        DB::table('import_errors')->truncate();
+
+        foreach ($rows as $index => $row) {
             if (count($row) !== count($header)) {
                 continue;
             }
@@ -35,6 +40,14 @@ class ProcessProductImport implements ShouldQueue
             ]);
 
             if ($validator->fails()) {
+                // Masukkan error ke database
+                DB::table('import_errors')->insert([
+                    'row_number' => $index + 2,
+                    'row_data' => implode(',', $row),
+                    'error_message' => $validator->errors()->first(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
                 continue;
             }
 

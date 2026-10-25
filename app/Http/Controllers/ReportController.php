@@ -86,8 +86,7 @@ class ReportController extends Controller
 
     public function importForm(): View
     {
-        // Ambil data dari tabel import_errors untuk ditampilkan di view import
-        $importErrors = DB::table('import_errors')->orderBy('created_at', 'desc')->get();
+        $importErrors = \Illuminate\Support\Facades\DB::table('import_errors')->orderBy('row_number')->get();
         
         return view('reports.import', compact('importErrors'));
     }
