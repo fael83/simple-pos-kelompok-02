@@ -48,5 +48,5 @@
             </table>
         </div>
     </div>
-@endif
+    @endif {{-- TAMBAHKAN @endif PENUTUP INI --}}
 @endsection
