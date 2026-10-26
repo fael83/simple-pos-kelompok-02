@@ -88,3 +88,24 @@ Berikut adalah daftar pengujian manual untuk memastikan setiap peran pengguna be
   3. Buka halaman **Transaksi / Kasir** (POS).
   4. Pilih beberapa produk[cite: 4], masukkan jumlah pembayaran, lalu klik **Bayar**[cite: 4] untuk menyelesaikan transaksi[cite: 3].
 * **Hasil yang Diharapkan**: Kasir berhasil masuk ke antarmuka POS, produk dapat dimasukkan ke keranjang, transaksi berhasil diproses dengan munculnya pesan "Transaksi berhasil disimpan"[cite: 3], dan stok produk berkurang secara otomatis.
+
+## Implementasi Queued Job pada Simple POS
+
+### Proses yang Dipindahkan ke Queue: Pengiriman Email Struk Pembayaran (`SendTransactionReceiptJob`)
+
+#### Alasan Pemindahan ke Queue:
+1. **Peningkatan Performa & Response Time:** 
+   Pengiriman email melalui protokol SMTP memerlukan koneksi 
+   ke server eksternal yang memakan waktu (network latency). 
+   Memindahkan proses ini ke background Queue memastikan antarmuka kasir/POS merespons 
+   secara instan tanpa perlu menunggu SMTP server selesai mengirim email.
+   
+2. **Pengalaman Pengguna (User Experience):** 
+   Kasir dapat langsung mencetak struk fisik atau melanjutkan ke 
+   transaksi berikutnya tanpa tertahan oleh proses *loading* pengiriman email.
+
+3. **Keandalan & Retry Mechanism:** 
+   Jika terjadi kegagalan jaringan saat mengirim email, 
+   Laravel Queue menyediakan fitur *automatic retry* (`tries`), 
+   sehingga email tetap dapat terkirim saat jaringan kembali stabil 
+   tanpa menggagalkan transaksi yang sudah berhasil disimpan ke database.
