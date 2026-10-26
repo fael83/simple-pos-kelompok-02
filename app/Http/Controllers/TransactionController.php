@@ -54,7 +54,7 @@ class TransactionController extends Controller
                     ]);
                 }
 
-                // Perbaikan pada baris subtotal (tanda minus dihapus & ditambah operator *)
+                // Perbaikan pada baris subtotal (digabungkan & menggunakan operator *)
                 $subtotal = $product->price * $item['qty'];
                 $total += $subtotal;
 
