@@ -72,10 +72,26 @@ class ReportController extends Controller
         [$from, $to] = $this->resolveDateRange($request);
         $categoryId = $request->input('category_id');
 
+        // Ambil data 5 produk terlaris (menggunakan kolom 'qty' sesuai struktur database Anda)
+        $topProducts = DB::table('transaction_details')
+            ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
+            ->join('products', 'transaction_details.product_id', '=', 'products.id')
+            ->whereBetween('transactions.created_at', [$from, $to])
+            ->select(
+                'products.name', 
+                DB::raw('SUM(transaction_details.qty) as total_qty'), // Pastikan 'qty'
+                DB::raw('SUM(transaction_details.subtotal) as total_revenue')
+            )
+            ->groupBy('products.id', 'products.name')
+            ->orderByDesc('total_qty')
+            ->limit(5)
+            ->get();
+
         $pdf = Pdf::loadView('reports.pdf', [
             'totalPenjualan' => $this->filteredQuery($from, $to, $categoryId)->sum('total'),
             'jumlahTransaksi' => $this->filteredQuery($from, $to, $categoryId)->count(),
             'transactions' => $this->filteredQuery($from, $to, $categoryId)->latest()->limit(50)->get(),
+            'topProducts' => $topProducts,
             'from' => $from->toDateString(),
             'to' => $to->toDateString(),
         ]);
