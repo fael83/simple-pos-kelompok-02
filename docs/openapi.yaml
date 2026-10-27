@@ -1,0 +1,114 @@
+
+openapi: 3.0.0
+info:
+  title: Simple POS API
+  version: 1.0.0
+
+paths:
+  /api/login:
+    post:
+      summary: Login dan dapatkan token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Token berhasil diterbitkan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Kredensial tidak valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /api/products:
+    get:
+      summary: Ambil daftar produk
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Daftar produk
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        price:
+                          type: integer
+                        category:
+                          type: string
+        '401':
+          description: Token tidak ada atau tidak valid
+
+  /api/transactions:
+    post:
+      summary: Buat transaksi baru
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_id:
+                        type: integer
+                      qty:
+                        type: integer
+      responses:
+        '201':
+          description: Transaksi berhasil disimpan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      total:
+                        type: integer
+        '401':
+          description: Token tidak ada atau tidak valid
+        '422':
+          description: Input tidak valid, misalnya product_id tidak ditemukan
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
