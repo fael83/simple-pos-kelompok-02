@@ -1,54 +1,35 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\StoreProductRequest;
-use App\Models\Category;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $request->validate([
+            'category_id' => ['sometimes', 'integer', 'exists:categories,id'],
+            'q' => ['sometimes', 'string', 'min:2'],
+            'sort' => ['sometimes', 'in:name,-name,price,-price'],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
+        ]);
+
+        $sort = $request->input('sort', 'name');
+        $direction = str_starts_with($sort, '-') ? 'desc' : 'asc';
+
         $products = Product::with('category')
-            ->orderBy('name')
-            ->paginate(10);
+            ->when($request->filled('category_id'), fn ($query) =>
+                $query->where('category_id', $request->integer('category_id')))
+            ->when($request->filled('q'), fn ($query) => 
+                $query->where('name', 'like', '%'.$request->input('q').'%'))
+            ->orderBy(ltrim($sort, '-'), $direction)
+            ->paginate($request->integer('per_page', 15))
+            ->withQueryString();
 
-        return view('products.index', compact('products'));
-    }
-
-    public function create()
-    {
-        $categories = Category::orderBy('name')->get();
-
-        return view('products.create', compact('categories'));
-    }
-
-    public function store(StoreProductRequest $request)
-    {
-        Product::create($request->validated());
-
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Produk berhasil ditambahkan.');
-    }
-
-    public function edit(string $id)
-    {
-        $product = Product::findOrFail($id);
-        $categories = Category::orderBy('name')->get();
-
-        return view('products.edit', compact('product', 'categories'));
-    }
-
-    public function update(StoreProductRequest $request, string $id)
-    {
-        $product = Product::findOrFail($id);
-
-        $product->update($request->validated());
-
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Produk berhasil diperbarui.');
+        return ProductResource::collection($products);
     }
 }
