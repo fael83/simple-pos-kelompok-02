@@ -29,23 +29,26 @@ class ApiClientDemo extends Command
     {
         $baseUrl = 'http://127.0.0.1:8000';
 
-        // Ditambah /v1 di sini
-        $login = Http::acceptJson()->post("{$baseUrl}/api/v1/login", [
+        $this->info('--- PENGUJIAN 1: Login dengan Kata Sandi Salah ---');
+
+        // 1. Coba login dengan password yang sengaja salah
+        $loginSalah = Http::acceptJson()->post("{$baseUrl}/api/v1/login", [
             'email' => 'kasir@pos.test',
-            'password' => 'password',
+            'password' => 'salah-password-banget',
         ]);
 
-        if ($login->failed()) {
-            $this->error('Login gagal: '.$login->json('message'));
+        if ($loginSalah->failed()) {
+            // Menampilkan pesan gagal dari server (biasanya 401 Unauthorized)
+            $this->error('Login gagal (Sesuai Harapan): '.$loginSalah->json('message'));
+            $this->info('Program berhenti di langkah pertama, tidak melanjutkan ke pengambilan produk atau transaksi.');
 
-            return self::FAILURE;
+            return self::FAILURE; 
         }
 
-        $token = $login->json('token');
-
+        // --- Bagian di bawah ini TIDAK AKAN DIEKSEKUSI jika login di atas gagal ---
+        $token = $loginSalah->json('token');
         $this->info("Login berhasil, token: {$token}");
 
-        // Ditambah /v1 di sini
         $products = Http::acceptJson()
             ->withToken($token)
             ->get("{$baseUrl}/api/v1/products");
@@ -60,7 +63,6 @@ class ApiClientDemo extends Command
 
         $productId = Product::first()->id;
 
-        // Ditambah /v1 di sini
         $transaction = Http::acceptJson()
             ->withToken($token)
             ->post("{$baseUrl}/api/v1/transactions", [
