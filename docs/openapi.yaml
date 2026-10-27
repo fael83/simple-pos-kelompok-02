@@ -1,11 +1,10 @@
-
 openapi: 3.0.0
 info:
   title: Simple POS API
-  version: 1.0.0
+  version: 1.1.0
 
 paths:
-  /api/login:
+  /api/v1/login:
     post:
       summary: Login dan dapatkan token
       requestBody:
@@ -43,7 +42,7 @@ paths:
                   message:
                     type: string
 
-  /api/products:
+  /api/v1/products:
     get:
       summary: Ambil daftar produk
       description: Mengambil daftar produk dengan paginasi.
@@ -125,7 +124,7 @@ paths:
         '422':
           description: Parameter paginasi tidak valid
 
-  /api/transactions:
+  /api/v1/transactions:
     post:
       summary: Buat transaksi baru
       security:

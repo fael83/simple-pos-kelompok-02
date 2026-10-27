@@ -29,7 +29,8 @@ class ApiClientDemo extends Command
     {
         $baseUrl = 'http://127.0.0.1:8000';
 
-        $login = Http::acceptJson()->post("{$baseUrl}/api/login", [
+        // Ditambah /v1 di sini
+        $login = Http::acceptJson()->post("{$baseUrl}/api/v1/login", [
             'email' => 'kasir@pos.test',
             'password' => 'password',
         ]);
@@ -44,9 +45,10 @@ class ApiClientDemo extends Command
 
         $this->info("Login berhasil, token: {$token}");
 
+        // Ditambah /v1 di sini
         $products = Http::acceptJson()
             ->withToken($token)
-            ->get("{$baseUrl}/api/products");
+            ->get("{$baseUrl}/api/v1/products");
 
         if ($products->failed()) {
             $this->error('Token kedaluwarsa/dicabut, atau server sedang bermasalah.');
@@ -58,9 +60,10 @@ class ApiClientDemo extends Command
 
         $productId = Product::first()->id;
 
+        // Ditambah /v1 di sini
         $transaction = Http::acceptJson()
             ->withToken($token)
-            ->post("{$baseUrl}/api/transactions", [
+            ->post("{$baseUrl}/api/v1/transactions", [
                 'items' => [
                     [
                         'product_id' => $productId,
