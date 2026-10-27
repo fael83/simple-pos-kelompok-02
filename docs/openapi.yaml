@@ -1,3 +1,14 @@
+# Perbandingan pengalaman Postman vs curl:
+# Setelah menguji endpoint login, products, dan transactions memakai Postman,
+# Postman jauh lebih nyaman dibanding curl untuk pengujian berulang. Token
+# dari /api/v1/login bisa disimpan otomatis ke variabel environment lewat script
+# post-response, sehingga tidak perlu menyalin dan menempel token secara manual
+# ke setiap perintah seperti pada curl. Respons ditampilkan dengan format rapi beserta
+# status code dan waktu, dan seluruh request tersimpan dalam collection yang
+# bisa dipakai ulang atau dibagikan. Kelebihan curl adalah ringan, cepat dijalankan
+# dari terminal, dan mudah dimasukkan ke skrip otomatis, tetapi untuk eksplorasi
+# dan debugging endpoint secara interaktif, Postman terasa lebih efisien.
+
 openapi: 3.0.0
 info:
   title: Simple POS API
